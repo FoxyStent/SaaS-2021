@@ -1,8 +1,8 @@
-import { BeforeInsert, Column, Entity, PrimaryColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryColumn, Unique } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-
 @Entity()
+@Unique(['username'])
 export class User {
   @PrimaryColumn()
   username: string;

@@ -1,6 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { userInfo } from "os";
+import { strict } from "assert";
 
 const logger = new Logger('AppService');
 
@@ -66,5 +67,32 @@ export class AppService {
   public findQuestion(id: number) {
     logger.log(`Asked for Question#${id}`);
     return this.client.send('findQuestion', id);
+  }
+
+  public findQuestionKeyword(keyword: string) {
+    logger.log(`Asked for Questions with keyword ${keyword}`);
+    return this.client.send('findQuestionKeyword', keyword);
+  }
+
+  public newAnswer(qid: number, text: string, username: string) {
+    logger.log('Asked to create new answer ' + text);
+    const a = {
+      qId: qid,
+      text: text,
+      username: username,
+    };
+    return this.client.send('createAnswer', a);
+  }
+
+  public findAnswer(id: number) {
+    return this.client.send('findOne', id)
+  }
+
+  public findUsersAnswers(uid: string) {
+    return this.client.send('findUsersAnswers', uid);
+  }
+
+  public findQuestionsAnswers(qid: number) {
+    return this.client.send('findQuestionsAnswers', qid);
   }
 }

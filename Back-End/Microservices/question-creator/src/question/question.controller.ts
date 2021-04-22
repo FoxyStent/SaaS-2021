@@ -22,4 +22,9 @@ export class QuestionController {
   remove(@Payload() id: number) {
     return this.questionService.remove(id);
   }
+
+  @MessagePattern('findQuestionKeyword')
+  findQuestionKeyword(@Payload() keyword: string) {
+    return this.questionService.findQuestionKeyword(keyword);
+  }
 }

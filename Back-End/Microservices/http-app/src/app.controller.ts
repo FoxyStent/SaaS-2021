@@ -49,8 +49,37 @@ export class AppController {
     return this.appService.newQuestion(title, text, keywords);
   }
 
-  @Get('question/:id')
+  @Get('question/id/:id')
   findQuestion(@Param('id') id: number) {
     return this.appService.findQuestion(id);
+  }
+
+  @Get('question/keyword/:keyword')
+  findQuestionKeyword(@Param('keyword') keyword: string) {
+    return this.appService.findQuestionKeyword(keyword);
+  }
+
+  @Post('answer')
+  newAnswer(
+    @Body('qid') qid: number,
+    @Body('text') text: string,
+    @Body('username') username: string,
+  ) {
+    return this.appService.newAnswer(qid, text, username);
+  }
+
+  @Get('answer/:id')
+  findAnswer(@Param('id') id: number) {
+    return this.appService.findAnswer(id);
+  }
+
+  @Get('answer/user/:uid')
+  findUsersAnswer(@Param('uid') uid: string) {
+    return this.appService.findUsersAnswers(uid);
+  }
+
+  @Get('answer/question/:qid')
+  findQuestionsAnswers(@Param('qid') qid: number) {
+    return this.appService.findQuestionsAnswers(qid);
   }
 }
