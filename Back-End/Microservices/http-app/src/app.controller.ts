@@ -7,6 +7,7 @@ export class AppController {
 
   constructor(private readonly appService: AppService) {}
 
+  /*
   @Post('user')
   async newUser(
     @Body('username') username: string,
@@ -82,4 +83,5 @@ export class AppController {
   findQuestionsAnswers(@Param('qid') qid: number) {
     return this.appService.findQuestionsAnswers(qid);
   }
+  */
 }

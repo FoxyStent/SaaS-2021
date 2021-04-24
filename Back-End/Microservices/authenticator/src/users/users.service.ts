@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
@@ -11,19 +11,19 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private manager: EntityManager,
+    private manager: Repository<User>,
     private jwtService: JwtService,
   ) {}
 
   logger = new Logger('user');
 
   create(createUserDto: CreateUserDto) {
-    const user = this.manager.create(User, createUserDto);
+    const user = this.manager.create(createUserDto);
     this.logger.log(
       `Trying to add (${user.username} ${user.email} ${user.password} ${user.name}) at Database`,
     );
     try {
-      return this.manager.insert(User, user);
+      return this.manager.insert(user);
     } catch (e) {
       return 'An Error Occurred.' + e;
     }
@@ -44,6 +44,10 @@ export class UsersService {
 
   findOne(username: string): Promise<User> {
     return this.manager.findOne(username);
+  }
+
+  find() {
+    return this.manager.find();
   }
 
   //

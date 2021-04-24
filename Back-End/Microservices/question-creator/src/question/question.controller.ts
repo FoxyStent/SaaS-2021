@@ -8,6 +8,7 @@ import { UpdateQuestionDto } from './dto/update-question.dto';
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
+  /*
   @MessagePattern('createQuestion')
   create(@Payload() createQuestionDto: CreateQuestionDto) {
     return this.questionService.create(createQuestionDto);
@@ -27,4 +28,5 @@ export class QuestionController {
   findQuestionKeyword(@Payload() keyword: string) {
     return this.questionService.findQuestionKeyword(keyword);
   }
+   */
 }

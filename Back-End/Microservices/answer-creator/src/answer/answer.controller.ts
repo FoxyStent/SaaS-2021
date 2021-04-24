@@ -7,7 +7,7 @@ import { UpdateAnswerDto } from './dto/update-answer.dto';
 @Controller()
 export class AnswerController {
   constructor(private readonly answerService: AnswerService) {}
-
+/*
   @MessagePattern('createAnswer')
   create(@Payload() createAnswerDto: CreateAnswerDto) {
     return this.answerService.create(createAnswerDto);
@@ -42,4 +42,5 @@ export class AnswerController {
   findQuestionsAnswers(@Payload() qid: number) {
     return this.answerService.findQuestionsAnswers(qid);
   }
+ */
 }

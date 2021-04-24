@@ -5,21 +5,38 @@ import { Question } from './entities/question.entity';
 import { EntityManager } from 'typeorm';
 import { Keyword } from './entities/keyword.entity';
 import { Relations } from './entities/relations.entity';
+import {
+  ClientProxy,
+  ClientProxyFactory,
+  Transport,
+} from '@nestjs/microservices';
+import { json } from 'express';
 
 const logger = new Logger('q_ser');
 
 @Injectable()
 export class QuestionService {
+  private client: ClientProxy;
+
   constructor(
     @InjectEntityManager()
     private manager: EntityManager,
-  ) {}
+  ) {
+    this.client = ClientProxyFactory.create({
+      transport: Transport.REDIS,
+      options: {
+        url: 'redis://localhost:6379',
+      },
+    });
+  }
 
-  async create(createQuestionDto: CreateQuestionDto) {
+  async create(createQuestionDto: CreateQuestionDto, token: string) {
+    //Ask for token verifacation. HTTP request or message?
     const question = this.manager.create(Question, createQuestionDto);
     try {
       const res = await this.manager.insert(Question, question);
-      const q_id = res.identifiers[0].id;
+      const q_id = res.identifiers[0].qid;
+      logger.log('qId: ' + q_id);
       Logger.log('Traversing Keywords.. ');
       for (const keyword of createQuestionDto.keywords) {
         logger.log('Now on: ' + keyword);
@@ -37,15 +54,25 @@ export class QuestionService {
         else rel.keyword = res;
         await this.manager.insert(Relations, rel);
       }
-      return q_id;
+      const mes = this.client.send('createQuestion', question);
+      return {
+        qId: q_id,
+        reply: mes,
+      };
     } catch (e) {
       return 'An error occurred' + e;
     }
   }
 
   async findQuestionKeyword(keyword: string) {
-    const k = await this.manager.findOne(Keyword, { select: ['kid'], where: { name: keyword } });
-    return await this.manager.find(Relations, { relations: ['question'], where: { keyword: k } });
+    const k = await this.manager.findOne(Keyword, {
+      select: ['kid'],
+      where: { name: keyword },
+    });
+    return await this.manager.find(Relations, {
+      relations: ['question'],
+      where: { keyword: k },
+    });
   }
 
   findOne(id: number) {

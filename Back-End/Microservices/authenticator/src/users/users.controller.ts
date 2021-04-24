@@ -15,6 +15,7 @@ export class UsersController {
     private jwtService: JwtService,
   ) {}
 
+  /*
   @MessagePattern('createUser')
   create(@Payload() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
@@ -46,12 +47,14 @@ export class UsersController {
     return this.usersService.login(userInfo);
   }
 
+ */
+
   @MessagePattern('authenticateMe')
   authenticate(@Payload() info: any) {
     try {
-      return this.jwtService.verify(info.token);
+      return { result: true, ...this.jwtService.verify(info) };
     } catch (e) {
-      return 'Something is wrong with your authentication.\n'+e;
+      return { result: false, ...e};
     }
   }
 }
