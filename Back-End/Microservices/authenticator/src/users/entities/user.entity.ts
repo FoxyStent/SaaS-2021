@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, PrimaryColumn, Unique } from 'typeorm';
+import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryColumn, Unique } from "typeorm";
 import * as bcrypt from 'bcrypt';
 
 @Entity()
@@ -15,6 +15,9 @@ export class User {
 
   @Column()
   name: string;
+
+  @CreateDateColumn()
+  memberSince: Date;
 
   @BeforeInsert()
   async encrypt() {

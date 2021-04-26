@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -22,11 +22,15 @@ export class UsersService {
     this.logger.log(
       `Trying to add (${user.username} ${user.email} ${user.password} ${user.name}) at Database`,
     );
-    try {
-      return this.manager.insert(user);
-    } catch (e) {
-      return 'An Error Occurred.' + e;
-    }
+    return this.manager.insert(user).then(() => {
+      return {
+        access_token: this.jwtService.sign({
+          username: user.username,
+          email: user.email,
+          memberSince: user.memberSince,
+        }),
+      };
+    });
     // return this.manager.insert(user).catch((e) => {
     //   return 'An Error Occured. ' + e;
     // });
@@ -34,12 +38,18 @@ export class UsersService {
 
   async login(userInfo: any) {
     const hash = await this.findOne(userInfo.username);
-    if (!hash) return 'User not Found';
-    const isMatch = bcrypt.compare(userInfo.password, hash.password);
+    if (!hash) throw new NotFoundException('User Not Found');
+    const isMatch = await bcrypt.compare(userInfo.password, hash.password);
+    this.logger.log(isMatch);
     if (isMatch)
       return {
-        access_token: this.jwtService.sign({ username: userInfo.username }),
+        access_token: this.jwtService.sign({
+          username: userInfo.username,
+          email: hash.email,
+          memberSince: hash.memberSince,
+        }),
       };
+    else throw new UnauthorizedException('Wrong Password');
   }
 
   findOne(username: string): Promise<User> {

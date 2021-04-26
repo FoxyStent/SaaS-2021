@@ -1,4 +1,16 @@
-import { Body, Controller, Get, Logger, Param, Post, Req } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Logger,
+  Param,
+  Post,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 import { UsersService } from './users/users.service';
 
@@ -16,6 +28,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  @HttpCode(200)
   @Post('user')
   async newUser(
     @Body('username') username: string,
@@ -28,9 +41,14 @@ export class AppController {
       username: username,
       password: password,
       email: email,
-      name: name
+      name: name,
+    };
+    try {
+      return await this.userService.create(dto);
+    } catch (e) {
+      logger.log(`Caught error on adding user ${username}: ${e}`);
+      throw new HttpException({ error: e.message }, HttpStatus.CONFLICT);
     }
-    return this.userService.create(dto);
   }
 
   @Get('user/:username')
@@ -45,6 +63,7 @@ export class AppController {
     return this.userService.find();
   }
 
+  @HttpCode(200)
   @Post('login')
   login(
     @Body('username') username: string,
@@ -63,5 +82,4 @@ export class AppController {
     return this.userService.auth(token);
   }
   */
-
 }

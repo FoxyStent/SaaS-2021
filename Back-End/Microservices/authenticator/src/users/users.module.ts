@@ -12,7 +12,7 @@ import { JwtModule } from '@nestjs/jwt';
     PassportModule,
     JwtModule.register({
       secret: 'saas-but-is-tl2',
-      signOptions: { expiresIn: '600s' },
+      signOptions: { expiresIn: '900s' },
     }),
   ],
   controllers: [UsersController],
