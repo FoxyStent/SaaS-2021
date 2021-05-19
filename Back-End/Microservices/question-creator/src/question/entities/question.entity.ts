@@ -1,10 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Relations } from './relations.entity';
 
 @Entity()
 export class Question {
   @PrimaryGeneratedColumn()
-  qid: number;
+  qId: number;
 
   @Column()
   title: string;
@@ -14,4 +14,7 @@ export class Question {
 
   @OneToMany(() => Relations, (r) => r.keyword)
   keyword_relations: Relations[];
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

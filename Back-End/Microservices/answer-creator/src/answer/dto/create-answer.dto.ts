@@ -1,5 +1,5 @@
 export class CreateAnswerDto {
-  qID: number;
+  qId: number;
   text: string;
   username: string;
 }

@@ -25,19 +25,21 @@ export class AnswerService {
   }
 
   async create(createAnswerDto: CreateAnswerDto, token: string) {
-    const auth = this.client.send('authenticateMe', token);
-    if (auth) {
+    //const obs = await this.client.send('authenticateMe', token).toPromise();
+    const obs = { result: true };
+    if (obs['result'] === true) {
       const ans = this.manager.create(Answer, createAnswerDto);
-      logger.log(`Trying to add ${createAnswerDto.text}`);
+      logger.log(`Trying to add ${createAnswerDto.qId}`);
       try {
-        const mes = this.client.send('createAnswer', ans);
+        logger.log(createAnswerDto.qId)
+        const mes = await this.client.send('createAnswer', createAnswerDto).toPromise();
         const ins = await this.manager.insert(Answer, ans);
         return {
           ins: ins,
           mes: mes,
         }
       } catch (e) {
-        return 'An error occurred\n' + e;
+        return 'An error occurred\n' + e.toString();
       }
     }
     else {

@@ -19,7 +19,7 @@ export class AppController {
     @Body('token') token: string
   ) {
     const dto = {
-      qID: qid,
+      qId: qid,
       text: text,
       username: username
     }
