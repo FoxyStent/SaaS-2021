@@ -13,8 +13,10 @@
   }
 }
 
-.btn-link{
-  color: white;
+#signup.btn-link{
+  padding: 0;
+  margin: 0;
+  vertical-align: baseline;
 }
 
 .footer{
