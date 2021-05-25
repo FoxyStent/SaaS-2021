@@ -1,0 +1,10 @@
+{
+  "type": "mysql",
+  "host": "localhost",
+  "port": 3306,
+  "username": "paris",
+  "password": "saas16",
+  "database": "SaaS_stats_viewer",
+  "entities": ["dist/**/*.entity{.ts,.js}"],
+  "synchronize": true
+}
