@@ -1,7 +1,8 @@
-import { Relations } from "./relations.entity";
+import { Relations } from './relations.entity';
 export declare class Question {
-    qid: number;
+    qId: number;
     title: string;
     text: string;
     keyword_relations: Relations[];
+    createdAt: Date;
 }

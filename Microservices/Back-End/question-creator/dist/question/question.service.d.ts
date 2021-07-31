@@ -1,12 +1,14 @@
 import { CreateQuestionDto } from './dto/create-question.dto';
-import { Question } from './entities/question.entity';
 import { EntityManager } from 'typeorm';
-import { Relations } from './entities/relations.entity';
 export declare class QuestionService {
     private manager;
+    private client;
     constructor(manager: EntityManager);
-    create(createQuestionDto: CreateQuestionDto): Promise<any>;
-    findQuestionKeyword(keyword: string): Promise<Relations[]>;
-    findOne(id: number): Promise<Question>;
+    create(createQuestionDto: CreateQuestionDto, token: string): Promise<string | {
+        qId: any;
+        message: any;
+    }>;
+    findQuestionKeyword(keyword: string): Promise<any>;
+    findOne(id: number): any;
     remove(id: number): string;
 }

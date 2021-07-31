@@ -9,6 +9,6 @@ export declare class AppController {
         qId: any;
         message: any;
     }>;
-    findQuestion(id: number): Promise<import("./question/entities/question.entity").Question>;
-    findQuestionKeyword(keyword: string): Promise<import("./question/entities/relations.entity").Relations[]>;
+    findQuestion(id: number): any;
+    findQuestionKeyword(keyword: string): Promise<any>;
 }

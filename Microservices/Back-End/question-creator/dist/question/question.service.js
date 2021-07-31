@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuestionService = void 0;
 const common_1 = require("@nestjs/common");
@@ -27,7 +28,9 @@ let QuestionService = class QuestionService {
         this.client = microservices_1.ClientProxyFactory.create({
             transport: microservices_1.Transport.REDIS,
             options: {
-                url: 'redis://localhost:6379',
+                url: process.env.REDIS_URL,
+                retryAttempts: 5,
+                retryDelay: 10,
             },
         });
     }
@@ -93,7 +96,7 @@ let QuestionService = class QuestionService {
 QuestionService = __decorate([
     common_1.Injectable(),
     __param(0, typeorm_1.InjectEntityManager()),
-    __metadata("design:paramtypes", [typeorm_2.EntityManager])
+    __metadata("design:paramtypes", [typeof (_a = typeof typeorm_2.EntityManager !== "undefined" && typeorm_2.EntityManager) === "function" ? _a : Object])
 ], QuestionService);
 exports.QuestionService = QuestionService;
 //# sourceMappingURL=question.service.js.map

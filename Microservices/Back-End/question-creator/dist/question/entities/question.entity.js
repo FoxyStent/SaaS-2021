@@ -17,7 +17,7 @@ let Question = class Question {
 __decorate([
     typeorm_1.PrimaryGeneratedColumn(),
     __metadata("design:type", Number)
-], Question.prototype, "qid", void 0);
+], Question.prototype, "qId", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
@@ -30,6 +30,10 @@ __decorate([
     typeorm_1.OneToMany(() => relations_entity_1.Relations, (r) => r.keyword),
     __metadata("design:type", Array)
 ], Question.prototype, "keyword_relations", void 0);
+__decorate([
+    typeorm_1.CreateDateColumn(),
+    __metadata("design:type", Date)
+], Question.prototype, "createdAt", void 0);
 Question = __decorate([
     typeorm_1.Entity()
 ], Question);

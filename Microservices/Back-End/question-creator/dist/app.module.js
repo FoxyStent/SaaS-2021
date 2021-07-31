@@ -16,7 +16,16 @@ let AppModule = class AppModule {
 };
 AppModule = __decorate([
     common_1.Module({
-        imports: [question_module_1.QuestionModule, typeorm_1.TypeOrmModule.forRoot()],
+        imports: [
+            question_module_1.QuestionModule,
+            typeorm_1.TypeOrmModule.forRoot({
+                type: 'mysql',
+                url: process.env.CLEARDB_DATABASE_URL,
+                synchronize: true,
+                "entities": ["dist/**/*.entity{.ts,.js}"],
+                autoLoadEntities: true,
+            }),
+        ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })

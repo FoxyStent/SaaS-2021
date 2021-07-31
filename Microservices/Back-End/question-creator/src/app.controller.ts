@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, Request } from '@nestjs/common';
 import { AppService } from './app.service';
 import { QuestionService } from './question/question.service';
 
@@ -19,14 +19,14 @@ export class AppController {
     @Body('title') title: string,
     @Body('text') text: string,
     @Body('keywords') keywords: string[],
-    @Body('token') token: string,
+    @Req() request: Request
   ) {
     const dto = {
       title: title,
       text: text,
       keywords: keywords,
     };
-
+    const token = request.headers['authorization'].replace('Bearer ', '');
     return this.questionService.create(dto, token);
   }
 
@@ -38,5 +38,10 @@ export class AppController {
   @Get('question/keyword/:keyword')
   findQuestionKeyword(@Param('keyword') keyword: string) {
     return this.questionService.findQuestionKeyword(keyword);
+  }
+
+  @Get('question/title/:tit')
+  findQuestionTitle(@Param('tit') tit: string) {
+    return this.questionService.findQuestionTitle(tit);
   }
 }
