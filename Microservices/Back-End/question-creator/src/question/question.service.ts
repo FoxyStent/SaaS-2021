@@ -10,7 +10,6 @@ import {
   ClientProxyFactory,
   Transport,
 } from '@nestjs/microservices';
-import { json } from 'express';
 
 const logger = new Logger('q_ser');
 
@@ -59,6 +58,7 @@ export class QuestionService {
         }
         const dto = { ...createQuestionDto, qId: q_id };
         const mes = await this.client.send('createQuestion', dto).toPromise();
+        this.client.
         return {
           qId: q_id,
           message: mes,
