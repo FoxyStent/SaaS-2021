@@ -102,10 +102,12 @@ export class QuestionService {
       where: { createdAt: MoreThan(today) },
     });
     today.setDate(today.getDate() + 7);
-    q.forEach(
-      (question) => data[today.getDate() - question.createdAt.getDate()]++,
+    q.forEach((question) => {
+        data[today.getDate() - question.createdAt.getDate()]++;
+      }
     );
-    return data;
+    return data
+
   }
 
   async getKeywordsStats() {
@@ -135,7 +137,7 @@ export class QuestionService {
     const questions = await this.manager.find(Question, {
       relations: ['keyword_relations'],
       order: { qId: 'DESC' },
-      take: 8,
+      take: 5,
     });
     for (const question of questions) {
       const keywords: any[] = [];
