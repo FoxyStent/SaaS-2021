@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException,
+  UnauthorizedException, } from '@nestjs/common';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 import { UpdateAnswerDto } from './dto/update-answer.dto';
 import { InjectEntityManager } from '@nestjs/typeorm';
@@ -14,20 +15,21 @@ export class AnswerService {
 
   constructor(
     @InjectEntityManager()
-    private manager: EntityManager
+    private manager: EntityManager,
   ) {
     this.client = ClientProxyFactory.create({
       transport: Transport.REDIS,
       options: {
-        url: 'redis://localhost:6379',
+        url: process.env.REDIS_URL,
+        retryAttempts: 5,
+        retryDelay: 10,
       },
     });
   }
 
   async create(createAnswerDto: CreateAnswerDto, token: string) {
-    //const obs = await this.client.send('authenticateMe', token).toPromise();
-    const obs = { result: true };
-    if (obs['result'] === true) {
+    const auth = await this.client.send('authenticateMe', token).toPromise();
+    if (auth['result'] === true) {
       const ans = this.manager.create(Answer, createAnswerDto);
       logger.log(`Trying to add ${createAnswerDto.qId}`);
       try {
@@ -42,9 +44,7 @@ export class AnswerService {
         return 'An error occurred\n' + e.toString();
       }
     }
-    else {
-      return 'Authorization failed';
-    }
+    else throw new UnauthorizedException('NotLoggedIn')
   }
 
   findAll() {

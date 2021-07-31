@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, Request } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AnswerService } from './answer/answer.service';
 
@@ -16,13 +16,14 @@ export class AppController {
     @Body('qid') qid: number,
     @Body('text') text: string,
     @Body('username') username: string,
-    @Body('token') token: string
+    @Req() req: Request
   ) {
     const dto = {
       qId: qid,
       text: text,
       username: username
     }
+    const token = req.headers['authorization'].replace('Bearer ', '');
     return this.answerService.create(dto, token);
   }
 
