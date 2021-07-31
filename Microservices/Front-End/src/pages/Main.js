@@ -4,9 +4,11 @@ import React, {useState, useEffect } from "react";
 import Footer from './Footer';
 import { Bar } from 'react-chartjs-2';
 import axios from "axios";
-import {Link, NavLink} from "react-router-dom";
+import {Link, NavLink, useHistory} from "react-router-dom";
 
 const  Main = () => {
+    const hist = useHistory();
+
     const [user, setUser] = useState(() =>{
         return (localStorage.getItem('userLogged') || "")
     });
@@ -15,16 +17,13 @@ const  Main = () => {
         return (localStorage.getItem('logged') || false)
     });
 
+    const [titleSearch_question, setTitleSearchQuestions] = useState("nothing");
     const [keywords, setKeywords] = useState({names: [], vals: []})
     const [week, setWeek] = useState({names: [], vals: []})
     const [latest_questions, setQuestions] = useState([]);
 
-    console.log('keyword: ' + keywords.hasOwnProperty('error'))
-    console.log('week: '+ week.hasOwnProperty('error'))
-    console.log('question: '+ latest_questions)
-
     useEffect(() => {
-        axios.get('http://localhost:3040/keywords').then(res => {
+        axios.get('https://saas16-ms-question-stats.herokuapp.com/keywords').then(res => {
             let names = []
             let values = []
             res.data.forEach(s => {
@@ -35,9 +34,7 @@ const  Main = () => {
                 names: names,
                 vals: values,
             })
-            console.log('called keywords')
         }).catch(e => {
-            console.log('caught keywords')
             if (e.response) {
                 setKeywords({
                     error: e
@@ -51,7 +48,7 @@ const  Main = () => {
             }
         })
 
-        axios.get('http://localhost:3040/week').then(res => {
+        axios.get('https://saas16-ms-question-stats.herokuapp.com/week').then(res => {
             const today = new Date();
             let days = []
             let values = []
@@ -66,34 +63,28 @@ const  Main = () => {
                 vals: values,
             })
         }).catch(e => {
-            console.log('caught week')
             if (e.response) {
-                console.log('Week Error')
                 setWeek({
                     ...week,
                     error: e.response
                 })
             }
             else {
-                console.log('else')
                 setWeek({
                     error: 'Contact Administrator'
                 })
             }
             })
 
-        axios.get('http://localhost:3040/previews/latest').then(res => {
+        axios.get('https://saas16-ms-question-stats.herokuapp.com/previews/latest').then(res => {
             setQuestions(res.data)
         }).catch(e => {
-            console.log('caught latest')
             if (e.response) {
-                console.log('Question Error')
                 setQuestions({
                     error: e.response
                 })
             }
             else {
-                console.log('else')
                 setQuestions({
                     error: 'Contact Administrator'
                 })
@@ -171,10 +162,31 @@ const  Main = () => {
         },
     }
 
+    const handleTitChange = e =>{
+        e.preventDefault();
+        const {id, value} = e.target;
+        if (value.length > 2)
+            axios.get("https://saas16-ms-question-creator.herokuapp.com/question/title/"+value).then(res => {
+                    setTitleSearchQuestions(res.data)
+                }
+            ).catch(e => {
+            })
+        else
+            setTitleSearchQuestions("nothing");
+    }
+
     const logout = e =>{
+        axios.post({
+            url: 'https://saas16-ms-auth.herokuapp.com/',
+            headers: {
+                'X-REFRESH': localStorage.getItem('refresh-token'),
+            },
+        })
         localStorage.removeItem('userLogged');
         localStorage.removeItem('access-token');
+        localStorage.removeItem('refresh-token');
         localStorage.setItem('logged', false);
+        hist.go(0)
         setLogged(false);
         setUser("");
     }
@@ -219,20 +231,21 @@ const  Main = () => {
                 </div>
                 <div className="row mb-5">
                     <div className="col mt-4">
-                        <h3>Ask a new Question</h3>
+                        <h3>Search a Question</h3>
                         <div className={'mb-3'}>
-                            <input className={'form-control input-xs'} placeholder={"Your Question"}/>
+                            <input className={'form-control'} onChange={handleTitChange} placeholder={"Title"}/>
                         </div>
-                        <div className={'mb-3'}>
-                            <input className={'form-control'} placeholder={"Keywords"}/>
-                        </div>
+                        {titleSearch_question!=="nothing" && titleSearch_question.map(item => {
+                            return(
+                                <div className={'row border justify-content-start'}>
+                                    <NavLink className={'fs-2'} to={{pathname: '/question', state: { id: item['qId']}}}>{item['title']}</NavLink>
+                                    <text>{item['text']}</text>
+                                </div>
+                            )
+                        })}
+                        <h3>If this didn't help</h3>
                         <div>
-                            <p>Pws na mathw react</p>
-                            <p>Question About Soa</p>
-                        </div>
-
-                        <div>
-                            <Link to={"/askme"} className={'btn btn-primary'}>Go and Ask</Link>
+                            <Link to={"/askme"} className={'btn btn-primary mt-2'}>Go and Ask</Link>
                         </div>
                     </div>
 

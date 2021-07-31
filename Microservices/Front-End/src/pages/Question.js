@@ -1,23 +1,23 @@
 import '../styles/App.css';
 import logo from '../logo192.png';
 import React, {useState, useEffect} from "react";
-import Footer from './Footer';
-import Login from "./Login";
 import {Link, useHistory, useLocation} from "react-router-dom";
 import axios from "axios";
 
 const  Question = () => {
     const loc = useLocation();
     const hist = useHistory();
+    console.log(loc.state);
     const question_id = loc.state['id'];
 
     const [error, setError] = useState(false);
     const [user, setUser] = useState(() =>{
         return (localStorage.getItem('userLogged') || "")
     });
+
     const [question, setQuestion] = useState({keywords: [], answers: []});
     const [answer, setAnswer] = useState({
-        qId: question_id,
+        qid: question_id,
         username: user,
     });
 
@@ -28,12 +28,12 @@ const  Question = () => {
             ...prevData,
             [id]: value
         }))
-        console.log(value)
+        console.log(answer)
     }
 
     const handlePost = e => {
         e.preventDefault();
-        axios.post('http://localhost:3030/answer', answer).then(res => {
+        axios.post('https://saas16-ms-answer-creator.herokuapp.com/answer', answer).then(res => {
             if (res.status === 201)
                 hist.go(0);
         }).catch(e => {
@@ -42,10 +42,10 @@ const  Question = () => {
         console.log(answer)
         console.log('posted')
     }
-    /*
+
     useEffect(() => {
         console.log('Request sent');
-        axios.get('http://localhost:3040/preview/' + question_id).then(res => {
+        axios.get('https://saas16-ms-question-stats.herokuapp.com/preview/' + question_id).then(res => {
             console.log(res.data);
             setQuestion(res.data);
         }).catch(e => {
@@ -61,7 +61,7 @@ const  Question = () => {
         })
     }, [])
 
-     */
+
 
     return (
         <div>
@@ -78,7 +78,7 @@ const  Question = () => {
 
                 <div className="row justify-content-center align-items-center">
                     <div className={'col-5 mt-4'}>
-                        <h6 hidden={error} className={'text-center alert alert-danger'}>Something went wrong when posting your answer. Try again later</h6>
+                        <h6 hidden={!error} className={'text-center alert alert-danger'}>Something went wrong when posting your answer. Try again later</h6>
                     </div>
                 </div>
 
@@ -99,12 +99,12 @@ const  Question = () => {
                 {question['answers'].map(ans => {
                     return(
                         <div>
-                            <div className="justify-content-center align-items-start mt-4 border-top">
-                                <p className={'col'}>{ans['text']}</p>
+                            <div className="row justify-content-center align-items-start text-center mt-4 border-top">
+                                <p className={'col-5'}>{ans['text']}</p>
                             </div>
 
                             <div className="justify-content-start align-items-center text-end mt-5">
-                                <p className={'me-4'}>Answered by: {ans['username']},</p>
+                                <p className={'me-4'}>Answered by: {ans['username'] || "Anonymous"},</p>
                                 <p className={'me-4'}>on {new Date(ans['createdAt']).toLocaleDateString('en-GB', { weekday: 'long', year:'numeric', month: 'numeric', day:'numeric'})}</p>
                             </div>
                         </div>

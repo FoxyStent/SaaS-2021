@@ -1,15 +1,16 @@
 import '../styles/App.css';
 import React from "react";
+import { Link } from "react-router-dom";
 import logo from "../logo192.png";
 
 const  Footer = () => {
     return (
         <div className={"footer bg-dark"}>
-            <button className={"col btn btn-link text-decoration-none"}>About Us</button>
-            <button className={"col btn btn-link text-decoration-none"}>Contact Us</button>
-            <button className={"col btn btn-link text-decoration-none"}>Project Documentation</button>
-            <button className={"col btn btn-link text-decoration-none"}>Link on GitHub</button>
-            <button className={"col btn btn-link text-decoration-none"}>Course Materials</button>
+            <Link className={"col btn btn-link text-decoration-none"}>About Us</Link>
+            <Link className={"col btn btn-link text-decoration-none"}>Contact Us</Link>
+            <Link to={"https://github.com/FoxyStent/SaaS-2021/blob/master/Ask%20me%20Anything.vpp"} className={"col btn btn-link text-decoration-none"}>Project Documentation</Link>
+            <Link to={"https://github.com/FoxyStent/SaaS-2021"} className={"col btn btn-link text-decoration-none"}>Link on GitHub</Link>
+            <Link className={"col btn btn-link text-decoration-none"}>Course Materials</Link>
         </div>
     )
 }

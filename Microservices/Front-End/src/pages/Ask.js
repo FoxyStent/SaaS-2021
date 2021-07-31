@@ -2,10 +2,13 @@ import '../styles/App.css';
 import logo from '../logo192.png';
 import React, {useState} from "react";
 import Footer from './Footer';
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import axios from "axios";
 
 const  Ask = () => {
+    const hist = useHistory();
+
+    const [error, setError] = useState(false);
     const [user, setUser] = useState(() =>{
         return (localStorage.getItem('userLogged') || "")
     });
@@ -14,16 +17,11 @@ const  Ask = () => {
         return (localStorage.getItem('logged') || false)
     });
 
-    const [token, setToken] = useState(() => {
-        return (localStorage.getItem('access-token') || "")
-    })
-
     const [question, setQuestion] = useState({
         username: user,
         title: "",
         text: "",
         keywords: [],
-        token: token
         }
     )
 
@@ -48,10 +46,13 @@ const  Ask = () => {
     const handleSubmit = e => {
         e.preventDefault();
         console.log(question);
-        axios.post('http://localhost:3020/question', question)
+        axios.post('https://saas16-ms-question-creator.herokuapp.com/question', question)
             .then(function (res) {
                 console.log(res);
-            })
+                hist.push("/question", {id: res.data.qId})
+            }).catch(e => {
+                setError(true);
+        })
     }
 
     return (
@@ -66,6 +67,11 @@ const  Ask = () => {
             </div>
             <div className={'container pb-5'}>
                 <div>
+                    <div className="row justify-content-center align-items-center">
+                        <div className={'col-5 mt-4'}>
+                            <h6 hidden={!error} className={'text-center alert alert-danger'}>You have to be logged in to ask a question. <Link to={'/login'}>Log In</Link> and try again</h6>
+                        </div>
+                    </div>
                     <div className={'shadow-lg w-75 m-auto p-4'}>
                         <form>
                             <div className="form-group">

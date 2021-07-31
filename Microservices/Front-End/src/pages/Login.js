@@ -52,7 +52,7 @@ const Login = () => {
     const handleSubmit = e => {
         e.preventDefault();
         if (signUpData.val_pass === signUpData.password) {
-            axios.post('http://localhost:3010/user', signUpData)
+            axios.post('https://saas16-ms-auth.herokuapp.com/user', signUpData)
                 .then(function (res) {
                     console.log(res);
                     if (res.status === 200) {
@@ -86,13 +86,14 @@ const Login = () => {
     const handleLogin = e => {
         e.preventDefault();
         console.log(loginData);
-        axios.post('http://localhost:3010/login', loginData)
+        axios.post('https://saas16-ms-auth.herokuapp.com/login', loginData)
         .then(function (res) {
             console.log(res);
             if (res.status === 200) {
                 localStorage.setItem('userLogged', loginData.username);
                 localStorage.setItem('logged', true);
                 localStorage.setItem('access-token', res.data['access_token']);
+                localStorage.setItem('refresh-token', res.data['refresh_token']);
                 hist.push('/')
             }
         })
