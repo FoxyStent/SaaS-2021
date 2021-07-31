@@ -9,7 +9,7 @@ import axios from "axios";
 const  Question = () => {
     const loc = useLocation();
     const hist = useHistory();
-    //const question_id = loc.state['id'];
+    const question_id = loc.state['id'];
 
     const [error, setError] = useState(false);
     const [user, setUser] = useState(() =>{
@@ -17,7 +17,7 @@ const  Question = () => {
     });
     const [question, setQuestion] = useState({keywords: [], answers: []});
     const [answer, setAnswer] = useState({
-        qId: 1,
+        qId: question_id,
         username: user,
     });
 
