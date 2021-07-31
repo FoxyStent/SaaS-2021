@@ -13,4 +13,6 @@ export declare class AppController {
     login(username: string, password: string): Promise<{
         access_token: string;
     }>;
+    logout(token: string): Promise<any>;
+    auth(token: string): Promise<any>;
 }

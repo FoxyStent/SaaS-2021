@@ -56,6 +56,12 @@ let AppController = class AppController {
         };
         return this.userService.login(uinfo);
     }
+    logout(token) {
+        return this.userService.logout(token);
+    }
+    auth(token) {
+        return this.userService.auth(token);
+    }
 };
 __decorate([
     common_1.Get(),
@@ -96,6 +102,20 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], AppController.prototype, "login", null);
+__decorate([
+    common_1.Post('logout'),
+    __param(0, common_1.Body('token')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AppController.prototype, "logout", null);
+__decorate([
+    common_1.Post('auth'),
+    __param(0, common_1.Body('token')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AppController.prototype, "auth", null);
 AppController = __decorate([
     common_1.Controller(),
     __metadata("design:paramtypes", [app_service_1.AppService,
